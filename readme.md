@@ -1,0 +1,1 @@
+Application for organizing banquets. Developed as a test application for use in a test automation course.
