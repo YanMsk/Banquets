@@ -7,6 +7,7 @@ import CartProvider from "./hooks/useCart";
 import { AuthProvider } from "./hooks/useAuth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./interceptors/authInterceptor";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

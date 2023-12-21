@@ -1,14 +1,15 @@
 import { sample_users } from "../data";
 
-export const getUser = () =>
-  localStorage.getItem("user")
+export const getUser = () => {
+  return localStorage.getItem("user") &&
+    localStorage.getItem("user") !== "undefined"
     ? JSON.parse(localStorage.getItem("user"))
     : null;
+};
 
 export const login = async (email, password) => {
-  const { data } = sample_users;
-  localStorage.setItem("user", JSON.stringify(data));
-  return data;
+  localStorage.setItem("user", JSON.stringify({ email, password }));
+  return { email, password };
 };
 
 export const logout = () => {
