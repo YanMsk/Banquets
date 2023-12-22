@@ -3,17 +3,22 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "./user.model";
 import * as bcrypt from "bcryptjs";
+import { AuthenticatedRequest } from "src/guards/interfaces/authenticated-request.intefrace";
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User) private userRepository: typeof User) {}
 
-  async getAllUsers() {
-    const user = await this.userRepository.findAll({ include: { all: true } });
-    return user;
+  async getAllUsers(req: AuthenticatedRequest) {
+    const user = req.user;
+    if (user.role === "admin") {
+      return await this.userRepository.findAll();
+    } else {
+      throw new HttpException("Отказано в доступе", HttpStatus.FORBIDDEN);
+    }
   }
 
-  async getOneUser(userId: number) {
+  async getOneUser(req: AuthenticatedRequest, userId: number) {
     const user = await this.userRepository.findByPk(userId);
     if (!user) {
       throw new HttpException(
@@ -21,10 +26,17 @@ export class UserService {
         HttpStatus.NOT_FOUND
       );
     }
-    return user;
+    if (user.id === req.user.id || req.user.role === "admin") {
+      return user;
+    } else {
+      throw new HttpException("Отказано в доступе", HttpStatus.FORBIDDEN);
+    }
   }
 
-  async createUser(userDto: CreateUserDto) {
+  async createUser(req: AuthenticatedRequest, userDto: CreateUserDto) {
+    if (req.user.role !== "admin") {
+      throw new HttpException("Отказано в доступе", HttpStatus.FORBIDDEN);
+    }
     const candidate = await this.userRepository.findOne({
       where: { login: userDto.login },
     });
@@ -43,7 +55,10 @@ export class UserService {
     return user;
   }
 
-  async deleteUser(userId: number) {
+  async deleteUser(req: AuthenticatedRequest, userId: number) {
+    if (req.user.role !== "admin") {
+      throw new HttpException("Отказано в доступе", HttpStatus.FORBIDDEN);
+    }
     const candidate = await this.userRepository.findByPk(userId);
     if (!candidate) {
       throw new HttpException(

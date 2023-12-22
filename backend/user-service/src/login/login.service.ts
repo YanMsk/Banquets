@@ -1,10 +1,4 @@
-import {
-  HttpCode,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { LoginDto } from "./dto/login.dto";
 import * as bcrypt from "bcryptjs";
 import { UserService } from "src/user/user.service";
@@ -28,7 +22,9 @@ export class LoginService {
   async check(request: Request) {
     try {
       const jwt = request.cookies["jwt"];
+
       const user = this.jwtService.verify(jwt);
+
       return user;
     } catch (e) {
       throw new UnauthorizedException({
@@ -39,15 +35,18 @@ export class LoginService {
 
   private async validateUser(loginDto: LoginDto) {
     const user = await this.userService.getUserByLogin(loginDto.login);
+    if (!user) {
+      throw new UnauthorizedException({ message: "Неверый email или пароль" });
+    }
     const passwordEquals = await bcrypt.compare(
       loginDto.password,
       user.password
     );
     if (user && passwordEquals) {
       return user;
+    } else {
+      throw new UnauthorizedException({ message: "Неверый email или пароль" });
     }
-
-    throw new UnauthorizedException({ message: "Неверый email или пароль" });
   }
 
   private async generateToken(user: User) {

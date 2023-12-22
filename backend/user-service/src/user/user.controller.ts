@@ -3,37 +3,39 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
-  Param,
   Post,
+  Query,
+  Req,
+  UseGuards,
   UsePipes,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { ValidationPipe } from "src/pipes/validation.pipe";
+import { AuthGuard } from "src/guards/auth.guard";
+import { Request } from "express";
 
+@UseGuards(AuthGuard)
 @Controller("user")
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  getAll() {
-    return this.userService.getAllUsers();
-  }
-
-  @Get("/:id")
-  getOne(@Param("id") userId: number) {
-    return this.userService.getOneUser(userId);
+  getAll(@Req() req: Request, @Query("id") userId: number) {
+    if (!userId) {
+      return this.userService.getAllUsers(req);
+    } else {
+      return this.userService.getOneUser(req, userId);
+    }
   }
   @UsePipes(ValidationPipe)
   @Post()
-  create(@Body() userDto: CreateUserDto) {
-    return this.userService.createUser(userDto);
+  create(@Req() req: Request, @Body() userDto: CreateUserDto) {
+    return this.userService.createUser(req, userDto);
   }
 
-  @Delete("/:id")
-  delete(@Param("id") userId: number) {
-    return this.userService.deleteUser(userId);
+  @Delete()
+  delete(@Req() req: Request, @Query("id") userId: number) {
+    return this.userService.deleteUser(req, userId);
   }
 }

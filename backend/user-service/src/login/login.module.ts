@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { LoginController } from "./login.controller";
 import { LoginService } from "./login.service";
 import { UserModule } from "src/user/user.module";
@@ -8,7 +8,7 @@ import { JwtModule } from "@nestjs/jwt";
   controllers: [LoginController],
   providers: [LoginService],
   imports: [
-    UserModule,
+    forwardRef(() => UserModule),
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || "SECTET",
       signOptions: {
@@ -16,5 +16,6 @@ import { JwtModule } from "@nestjs/jwt";
       },
     }),
   ],
+  exports: [LoginService],
 })
 export class LoginModule {}
