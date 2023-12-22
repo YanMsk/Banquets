@@ -26,9 +26,15 @@ export class LoginService {
   }
 
   async check(request: Request) {
-    const jwt = request.cookies["jwt"];
-    const user = this.jwtService.verify(jwt);
-    return user;
+    try {
+      const jwt = request.cookies["jwt"];
+      const user = this.jwtService.verify(jwt);
+      return user;
+    } catch (e) {
+      throw new UnauthorizedException({
+        message: "Пользователь не авторизован",
+      });
+    }
   }
 
   private async validateUser(loginDto: LoginDto) {
