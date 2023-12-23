@@ -8,8 +8,17 @@ export const getUser = () => {
 };
 
 export const login = async (email, password) => {
-  localStorage.setItem("user", JSON.stringify({ email, password }));
-  return { email, password };
+  let user = {};
+  console.log(email, password);
+  if (
+    (user = sample_users.find(
+      (item) => item.email === email && item.password === password
+    ))
+  ) {
+    localStorage.setItem("user", JSON.stringify(user));
+    return user;
+  }
+  return;
 };
 
 export const logout = () => {

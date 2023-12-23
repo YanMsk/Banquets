@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import CartPage from "./pages/Cart/CartPage";
 import FoodPage from "./pages/Food/FoodPage";
 import HomePage from "./pages/Home/HomePage";
@@ -8,6 +8,7 @@ import AuthRoute from "./components/AuthRoute/AuthRoute";
 import CheckoutPage from "./pages/Checkout/CheckoutPage.js";
 import RegisterPage from "./pages/Register/RegisterPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 export default function AppRoutes() {
   return (
@@ -35,6 +36,15 @@ export default function AppRoutes() {
           </AuthRoute>
         }
       />
+      <Route
+        path='/dashboard'
+        element={
+          <AuthRoute>
+            <Dashboard />
+          </AuthRoute>
+        }
+      />
+      <Route path='*' element={<Navigate to='/' />} />
     </Routes>
   );
 }
