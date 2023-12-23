@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     }
 
     await createOrder({ ...order, name: data.name, address: data.address });
-    navigate("/payment");
+    navigate("/");
   };
 
   return (
