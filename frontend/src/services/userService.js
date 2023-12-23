@@ -20,3 +20,15 @@ export const register = async (registerData) => {
   localStorage.setItem("user", JSON.stringify(registerData));
   return registerData;
 };
+
+export const updateProfile = async (user) => {
+  localStorage.setItem("user", JSON.stringify(user));
+  return user;
+};
+
+export const changePassword = async (passwords) => {
+  localStorage.setItem(
+    "user",
+    JSON.stringify(...localStorage.getItem("user"), passwords?.newPassword)
+  );
+};

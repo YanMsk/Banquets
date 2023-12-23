@@ -7,6 +7,7 @@ import LoginPage from "./pages/Login/LoginPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import CheckoutPage from "./pages/Checkout/CheckoutPage.js";
 import RegisterPage from "./pages/Register/RegisterPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
 
 export default function AppRoutes() {
   return (
@@ -23,6 +24,14 @@ export default function AppRoutes() {
         element={
           <AuthRoute>
             <CheckoutPage />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path='/profile'
+        element={
+          <AuthRoute>
+            <ProfilePage />
           </AuthRoute>
         }
       />
